@@ -1,0 +1,76 @@
+
+int buttonPin = 7;
+#include <LiquidCrystal.h>
+LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
+int buttonState = 0;
+
+int buttonPin;
+int buttonPin2;
+int buttonPin3;
+
+
+void setup() {
+
+  pinMode(buttonPin, INPUT_PULLUP);
+  Serial.begin(38400);
+  lcd.clear();
+  lcd.begin(16, 2);
+  lcd.setCursor(0, 0);
+  lcd.print("start");
+
+}
+
+
+String baban = "baban";
+
+
+
+void loop() {
+
+  buttonPin = digitalRead(6);
+  buttonPin2 = digitalRead(7);
+  buttonPin3 = digitalRead(8);
+  buttonState = digitalRead(buttonPin)
+
+  if (buttonPin == HIGH && buttonPin2 == HIGH) {
+    a = 49;
+  } else if (buttonPin == HIGH && buttonPin3 == HIGH) {
+    a = 50;
+  } else if (buttonPin2 == HIGH && buttonPin3 == HIGH) {
+    a = 51;
+  } else if (buttonPin == HIGH) {
+    a = 52;
+  } else if (buttonPin2 == HIGH) {
+    a = 53;
+  } else if (buttonPin3 == HIGH) {
+    a = 54;
+  }
+
+
+  if (a == 49) {
+    lcd.clear();
+    lcd.print("photo taking");
+  }
+  else if (a == 50) {
+    lcd.clear();
+    lcd.print("take photo");
+  }
+  else if (a == 51) {
+    lcd.clear();
+    lcd.print("angry");
+  }
+  else if (a == 52) {
+    lcd.clear();
+    lcd.print("happy");
+  }
+  else if (a == 53) {
+    lcd.clear();
+    lcd.print("sad");
+  }
+  else if (a == 54) {
+    lcd.clear();
+    lcd.print("surprise");
+  }
+  
+
+}
