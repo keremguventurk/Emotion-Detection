@@ -1,0 +1,112 @@
+import serial
+import time
+import picamera
+import sys
+import cv2
+import numpy as np
+import os
+from PIL import Image 
+ser = serial.Serial("/dev/ttyACM0",9600)
+camera = picamera.PiCamera()
+threshold = 1000
+word = ""
+baban = ""
+answer = ""
+face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
+mouth_cascade = cv2.CascadeClassifier('haarcascade_mcs_mouth.xml')
+recognizer = cv2.createLBPHFaceRecognizer()
+def get_images_and_labels(path):
+    image_paths = [os.path.join(path,f) for f in os.listdir(path)]
+    images = []
+    labels = []
+    baban = 1
+    print "resim1"
+    img = cv2.imread('/home/pi/Desktop/angry.jpg')
+    gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    images.append(gray_img)
+    labels.append(baban)
+    print baban
+    baban = baban + 1
+    print "done"
+    print "resim2"
+    img = cv2.imread('/home/pi/Desktop/happy.jpg')
+    gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    images.append(gray_img)
+    labels.append(baban)
+    print baban
+    baban = baban + 1
+    print "done"
+    print "resim3"
+    img = cv2.imread('/home/pi/Desktop/sad.jpg')
+    gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    images.append(gray_img)
+    labels.append(baban)
+    print baban
+    baban = baban + 1
+    print "done"
+    print "resim4"
+    img = cv2.imread('/home/pi/Desktop/surprise.jpg')
+    gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    images.append(gray_img)
+    labels.append(baban)
+    print baban
+    baban = baban + 1
+    print "done"
+
+    
+        
+    
+    return images,labels
+path = "/home/pi/Desktop/database"
+val = 6
+ser.write('6')
+images,labels = get_images_and_labels(path)
+cv2.destroyAllWindows()
+coz = "a";
+
+while True:
+
+    
+    if True:
+            coz = ""
+            ser.write('5')
+            answer = ""
+            camera.start_preview()
+            time.sleep(5)
+            camera.capture("/home/pi/Desktop/picture/subject01_yeah.jpg")
+            camera.stop_preview()
+            recognizer.train(images,np.array(labels))
+            img = cv2.imread("/home/pi/Desktop/picture/subject01_yeah.jpg")
+            gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+            faces = face_cascade.detectMultiScale(gray_img,1.05,5,minSize=(130,130))
+            for (p,q,r,s) in faces:
+                cv2.rectangle(img,(p,q),(p+r,q+s),(255,0,0),2)
+                face_gray = gray_img[q:q+s,p:p+r]
+                cv2.imwrite('/home/pi/Desktop/anan.jpg',face_gray)
+                face_color = img[q:q+s,p:p+r]
+                mouth = mouth_cascade.detectMultiScale(face_gray,minSize = (100,100))
+                for (mp,mq,mr,ms) in mouth:
+                    if mq > 200:
+                        cv2.imwrite("/home/pi/Desktop/yeah1.jpg",face_gray[mq:mq+ms,mp:mp+mr])
+                        nbr_predicted,conf = recognizer.predict(face_gray[mq:mq+ms,mp:mp+mr])
+                        if nbr_predicted == 1:
+                            answer = "angry"
+                            ser.write('1')
+                        elif nbr_predicted == 2:
+                            answer =  "happy"
+                            ser.write('2')
+                        elif nbr_predicted == 3:
+                            answer =  "sad"
+                            ser.write('3')
+                        elif nbr_predicted == 4:
+                            answer =  "surprise"
+                            ser.write('4')
+                            print conf
+            
+            print answer
+            coz = ""
+            time.sleep(3)
+            
+            
+        
+            
